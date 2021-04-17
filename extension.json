@@ -5,6 +5,8 @@
     "description": "Rubocop extension.",
     "version": "1.0",
     "categories": ["issues"],
+    "repository": "https://github.com/mzagaja/Rubocop.novaextension",
+    "bugs": "https://github.com/mzagaja/Rubocop.novaextension/issues",
     
     "main": "main.js",
     
