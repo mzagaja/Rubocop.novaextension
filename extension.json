@@ -1,0 +1,18 @@
+{
+    "identifier": "zagaja.Rubocop",
+    "name": "Rubocop",
+    "organization": "Matt Zagaja",
+    "description": "Rubocop extension.",
+    "version": "1.0",
+    "categories": ["issues"],
+    
+    "main": "main.js",
+    
+    "activationEvents": [
+        "onLanguage:ruby"
+    ],
+    
+    "entitlements": {
+        "process": true
+    }
+}
