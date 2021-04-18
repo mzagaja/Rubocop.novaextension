@@ -1,6 +1,6 @@
 {
     "identifier": "zagaja.Rubocop",
-    "name": "Rubocop",
+    "name": "RuboCop",
     "organization": "Matt Zagaja",
     "description": "Rubocop extension.",
     "version": "1.0",

@@ -7,7 +7,6 @@ exports.deactivate = function() {
     // Clean up state before the extension is deactivated
 }
 
-
 class IssuesProvider {
     async provideIssues(editor) {
         return new Promise(function(resolve) {
@@ -18,6 +17,14 @@ class IssuesProvider {
                 let rubocop = new Process("/usr/bin/env", options);
                 let rawIssues = []
                 let issues = [];
+                const issueSeverity = {
+                    'fatal': IssueSeverity.Error,
+                    'error': IssueSeverity.Error,
+                    'warning': IssueSeverity.Warning,
+                    'refactor': IssueSeverity.Hint,
+                    'convention': IssueSeverity.Hint,
+                    'info': IssueSeverity.Info
+                }
         
                 rubocop.onStdout((line) => { rawIssues.push(line); });
                 rubocop.onStderr((line) => { console.warn(`Rubocop ERROR: ${line}`); });
@@ -27,7 +34,7 @@ class IssuesProvider {
                         let issue = new Issue();
                         issue.message = offense['message']
                         issue.code = offense['cop_name']
-                        issue.severity = IssueSeverity.Error;
+                        issue.severity = issueSeverity[offense['severity']];
                         issue.column = offense["location"]["start_column"]
                         issue.endColumn = offense["location"]["end_column"]
                         issue.line = offense["location"]["start_line"]
