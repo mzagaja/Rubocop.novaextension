@@ -21,7 +21,16 @@ gem install rubocop rubocop-rails rubocop-rspec rubocop-md
 
 
 ### Configuration
+* We now let you choose whether to prepend your rubocop with `bundle exec`. If you do not it will
+use `rubocop` from your default/global gemset.
 
-Following the [Rails Doctrine](https://rubyonrails.org/doctrine/#convention-over-configuration)
-this extension does not require nor support configuration. It will use your global
-Rubocop installation. 
+### Troubleshooting
+If you have a .rubocop.yml with `inherit_gem` and use `rvm` you will need to make sure your gems are
+all available in the default gemset. The easiest way to do this is to avoid using app specific
+gemsets. Otherwise try:
+
+```sh
+cd $APP_DIRECTORY
+rvm use default
+bundle install
+```

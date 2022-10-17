@@ -1,6 +1,6 @@
 
 exports.activate = function() {
-    
+
 }
 
 exports.deactivate = function() {
@@ -12,8 +12,14 @@ class IssuesProvider {
         return new Promise(function(resolve) {
             try {
                 const options = {
+                    cwd: nova.workspace.path,
                     args: ["rubocop", '--disable-pending-cops', '-fj', editor.document.path]
                 };
+                if(nova.config.get("Rubocop.bundle-exec", "boolean")) {
+                    options.args.unshift("bundle", "exec")
+                }
+                // console.log('Config: ' + nova.config.get("Rubocop.bundle-exec", "boolean"))
+                // console.log("Options: " + options.args)
                 let rubocop = new Process("/usr/bin/env", options);
                 let rawIssues = []
                 let issues = [];
@@ -25,24 +31,27 @@ class IssuesProvider {
                     'convention': IssueSeverity.Hint,
                     'info': IssueSeverity.Info
                 }
-        
                 rubocop.onStdout((line) => { rawIssues.push(line); });
-                rubocop.onStderr((line) => { console.warn(`Rubocop ERROR: ${line}`); });
+                rubocop.onStderr((line) => { console.error(`Rubocop ERROR: ${line}`); });
                 rubocop.onDidExit((message) => {
-                    const allIssues = JSON.parse(rawIssues)['files'][0]['offenses'];
-                    allIssues.forEach((offense) => {
-                        let issue = new Issue();
-                        issue.message = offense['message']
-                        issue.code = offense['cop_name']
-                        issue.severity = issueSeverity[offense['severity']];
-                        issue.column = offense["location"]["start_column"]
-                        issue.endColumn = offense["location"]["end_column"]
-                        issue.line = offense["location"]["start_line"]
-                        issue.endLine = offense["location"]["end_line"]
-                        issues.push(issue);
-                    })
-                    resolve(issues);
-                    return;
+                    if(rawIssues.length === 0) {
+                        return;
+                    } else {
+                        const allIssues = JSON.parse(rawIssues)['files'][0]['offenses'];
+                        allIssues.forEach((offense) => {
+                            let issue = new Issue();
+                            issue.message = offense['message']
+                            issue.code = offense['cop_name']
+                            issue.severity = issueSeverity[offense['severity']];
+                            issue.column = offense["location"]["start_column"]
+                            issue.endColumn = offense["location"]["end_column"]
+                            issue.line = offense["location"]["start_line"]
+                            issue.endLine = offense["location"]["end_line"]
+                            issues.push(issue);
+                        })
+                        resolve(issues);
+                        return;
+                    }
                 });
                 rubocop.start();
             } catch(error) {

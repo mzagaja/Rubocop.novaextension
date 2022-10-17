@@ -3,18 +3,26 @@
     "name": "RuboCop",
     "organization": "Matt Zagaja",
     "description": "Rubocop extension.",
-    "version": "1.1",
-    "categories": ["issues"],
+    "version": "1.2",
+    "categories": [
+        "issues"
+    ],
     "repository": "https://github.com/mzagaja/Rubocop.novaextension",
     "bugs": "https://github.com/mzagaja/Rubocop.novaextension/issues",
-    
     "main": "main.js",
-    
     "activationEvents": [
         "onLanguage:ruby"
     ],
-    
     "entitlements": {
         "process": true
-    }
+    },
+    "config": [
+        {
+            "key": "Rubocop.bundle-exec",
+            "title": "Prepend rubocop with bundle exec",
+            "description": "Use this to prepend rubocop with bundle exec.",
+            "type": "boolean",
+            "default": false
+        }
+    ]
 }
