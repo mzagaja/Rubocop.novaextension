@@ -31,6 +31,6 @@ gemsets. Otherwise try:
 
 ```sh
 cd $APP_DIRECTORY
-rvm use default
+rvm gemset use default
 bundle install
 ```
