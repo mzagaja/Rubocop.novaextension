@@ -24,7 +24,7 @@
     {
       "key": "Rubocop.rvm-exec",
       "title": "Prepend rubocop with rvm-exec",
-      "description": "Use this to prepend rubocop with rvm-exec .ruby-version",
+      "description": "Use this to prepend rubocop with rvm .ruby-version do",
       "type": "boolean",
       "default": false
     }

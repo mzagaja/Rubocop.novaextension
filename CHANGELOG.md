@@ -1,5 +1,8 @@
+## Version 1.3.1
+* Fix README and configuration description to more accurately reflect final state of changes.
+
 ## Version 1.3
-* Enable using `rvm-exec` with rubocop.
+* Enable using `rvm do` with rubocop.
 
 ## Version 1.2
 * Enable using `bundle exec` with rubocop.
