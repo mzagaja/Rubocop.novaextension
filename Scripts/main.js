@@ -18,8 +18,13 @@ class IssuesProvider {
                 if(nova.config.get("Rubocop.bundle-exec", "boolean")) {
                     options.args.unshift("bundle", "exec")
                 }
-                // console.log('Config: ' + nova.config.get("Rubocop.bundle-exec", "boolean"))
-                // console.log("Options: " + options.args)
+                if (nova.config.get("Rubocop.rvm-exec", "boolean")) {
+                  const rubyVersionFile = nova.fs.open(
+                    `${nova.workspace.path}/.ruby-version`
+                  );
+                  const rubyVersion = rubyVersionFile.readline().replace(/(\r\n|\n|\r)/gm, "");
+                  options.args.unshift("rvm", rubyVersion, "--summary", "do");
+                }
                 let rubocop = new Process("/usr/bin/env", options);
                 let rawIssues = []
                 let issues = [];

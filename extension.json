@@ -1,28 +1,32 @@
 {
-    "identifier": "zagaja.Rubocop",
-    "name": "RuboCop",
-    "organization": "Matt Zagaja",
-    "description": "Rubocop extension.",
-    "version": "1.2",
-    "categories": [
-        "issues"
-    ],
-    "repository": "https://github.com/mzagaja/Rubocop.novaextension",
-    "bugs": "https://github.com/mzagaja/Rubocop.novaextension/issues",
-    "main": "main.js",
-    "activationEvents": [
-        "onLanguage:ruby"
-    ],
-    "entitlements": {
-        "process": true
+  "identifier": "zagaja.Rubocop",
+  "name": "RuboCop",
+  "organization": "Matt Zagaja",
+  "description": "Rubocop extension.",
+  "version": "1.3",
+  "categories": ["issues"],
+  "repository": "https://github.com/mzagaja/Rubocop.novaextension",
+  "bugs": "https://github.com/mzagaja/Rubocop.novaextension/issues",
+  "main": "main.js",
+  "activationEvents": ["onLanguage:ruby"],
+  "entitlements": {
+    "process": true,
+    "filesystem": "readonly"
+  },
+  "config": [
+    {
+      "key": "Rubocop.bundle-exec",
+      "title": "Prepend rubocop with bundle exec",
+      "description": "Use this to prepend rubocop with bundle exec.",
+      "type": "boolean",
+      "default": false
     },
-    "config": [
-        {
-            "key": "Rubocop.bundle-exec",
-            "title": "Prepend rubocop with bundle exec",
-            "description": "Use this to prepend rubocop with bundle exec.",
-            "type": "boolean",
-            "default": false
-        }
-    ]
+    {
+      "key": "Rubocop.rvm-exec",
+      "title": "Prepend rubocop with rvm-exec",
+      "description": "Use this to prepend rubocop with rvm-exec .ruby-version",
+      "type": "boolean",
+      "default": false
+    }
+  ]
 }

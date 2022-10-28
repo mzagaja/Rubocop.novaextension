@@ -1,3 +1,6 @@
+## Version 1.3
+* Enable using `rvm-exec` with rubocop.
+
 ## Version 1.2
 * Enable using `bundle exec` with rubocop.
 * Bug: fix error if there are no fixes from Rubocop.
