@@ -1,6 +1,4 @@
-
 exports.activate = function() {
-
 }
 
 exports.deactivate = function() {
@@ -25,8 +23,13 @@ class IssuesProvider {
                   const rubyVersion = rubyVersionFile.readline().replace(/(\r\n|\n|\r)/gm, "");
                   options.args.unshift("rvm", rubyVersion, "--summary", "do");
                 }
+                
+                if (nova.config.get("Rubocop.asdf-exec", "boolean")) {
+                  options.args.unshift("asdf", "exec");
+                }
+                
                 let rubocop = new Process("/usr/bin/env", options);
-                let rawIssues = []
+                let rawOutput = ""; // Changed from array to string
                 let issues = [];
                 const issueSeverity = {
                     'fatal': IssueSeverity.Error,
@@ -36,26 +39,47 @@ class IssuesProvider {
                     'convention': IssueSeverity.Hint,
                     'info': IssueSeverity.Info
                 }
-                rubocop.onStdout((line) => { rawIssues.push(line); });
+                
+                // Accumulate all stdout data into a single string
+                rubocop.onStdout((line) => { rawOutput += line; });
                 rubocop.onStderr((line) => { console.error(`Rubocop ERROR: ${line}`); });
                 rubocop.onDidExit((message) => {
-                    if(rawIssues.length === 0) {
+                    if(rawOutput.trim().length === 0) {
+                        resolve([]);
                         return;
-                    } else {
-                        const allIssues = JSON.parse(rawIssues)['files'][0]['offenses'];
-                        allIssues.forEach((offense) => {
+                    }
+                    
+                    try {
+                        const rubcopResult = JSON.parse(rawOutput);
+                        
+                        // Find the file that matches the current editor document
+                        const currentFile = rubcopResult.files?.find(file => 
+                            file.path === editor.document.path || 
+                            file.path.endsWith(editor.document.path.split('/').pop())
+                        );
+                        
+                        if (!currentFile || !currentFile.offenses) {
+                            resolve([]);
+                            return;
+                        }
+                        
+                        currentFile.offenses.forEach((offense) => {
                             let issue = new Issue();
-                            issue.message = offense['message']
-                            issue.code = offense['cop_name']
-                            issue.severity = issueSeverity[offense['severity']];
-                            issue.column = offense["location"]["start_column"]
-                            issue.endColumn = offense["location"]["end_column"]
-                            issue.line = offense["location"]["start_line"]
-                            issue.endLine = offense["location"]["end_line"]
+                            issue.message = offense.message;
+                            issue.code = offense.cop_name;
+                            issue.severity = issueSeverity[offense.severity] || IssueSeverity.Info;
+                            issue.line = offense.location.start_line;
+                            issue.endLine = offense.location.last_line; // Fixed: was end_line, should be last_line
+                            issue.column = offense.location.start_column;
+                            issue.endColumn = offense.location.last_column; // Fixed: was end_column, should be last_column
                             issues.push(issue);
-                        })
+                        });
+                        
                         resolve(issues);
-                        return;
+                    } catch(parseError) {
+                        console.error(`Rubocop JSON parse error: ${parseError}`);
+                        console.error(`Raw output: ${rawOutput}`);
+                        resolve([]);
                     }
                 });
                 rubocop.start();

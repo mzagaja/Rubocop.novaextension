@@ -1,3 +1,7 @@
+## Version 1.4
+* Add asdf exec option for asdf users.
+* Fix rubocop JSON output parsing. Unclear when it changed, but this should work going forward.
+
 ## Version 1.3.1
 * Fix README and configuration description to more accurately reflect final state of changes.
 

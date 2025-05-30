@@ -3,7 +3,7 @@
   "name": "RuboCop",
   "organization": "Matt Zagaja",
   "description": "Rubocop extension.",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "categories": ["issues"],
   "repository": "https://github.com/mzagaja/Rubocop.novaextension",
   "bugs": "https://github.com/mzagaja/Rubocop.novaextension/issues",
@@ -25,6 +25,13 @@
       "key": "Rubocop.rvm-exec",
       "title": "Prepend rubocop with rvm-exec",
       "description": "Use this to prepend rubocop with rvm .ruby-version do",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "key": "Rubocop.asdf-exec",
+      "title": "Prepend rubocop with asdf-exec",
+      "description": "Use this to prepend rubocop with asdf-exec .ruby-version do",
       "type": "boolean",
       "default": false
     }
