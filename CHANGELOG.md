@@ -2,6 +2,7 @@
 * Add mise exec option for mise users.
 * LLMs made JSON parsing unnecessarily complex so I refactored back to my original approach and then
   updated to resolve the real issue which was `end_line` is now `last_line`
+* Add autocorrect option.
 
 ## Version 1.4
 * Add asdf exec option for asdf users.
