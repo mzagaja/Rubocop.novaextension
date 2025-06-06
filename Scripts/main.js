@@ -1,4 +1,11 @@
+let languageServer = null;
+
 exports.activate = function() {
+    // Start the language server if enabled
+    if (nova.config.get("Rubocop.use-language-server", "boolean")) {
+        startLanguageServer();
+    }
+    
     // Register save listener for auto-correction
     nova.workspace.onDidAddTextEditor((editor) => {
         editor.onDidSave((editor) => {
@@ -8,10 +15,87 @@ exports.activate = function() {
             }
         });
     });
+    
+    // Watch for language server setting changes
+    nova.config.onDidChange("Rubocop.use-language-server", (newValue) => {
+        if (newValue) {
+            startLanguageServer();
+        } else {
+            stopLanguageServer();
+        }
+    });
 }
 
 exports.deactivate = function() {
-    // Clean up state before the extension is deactivated
+    stopLanguageServer();
+}
+
+function startLanguageServer() {
+    if (languageServer) {
+        languageServer.stop();
+        languageServer = null;
+    }
+    
+    try {
+        // Build the command arguments for rubocop LSP
+        let args = ["rubocop", "--lsp"];
+        
+        // Apply the same execution environment options
+        if (nova.config.get("Rubocop.bundle-exec", "boolean")) {
+            args.unshift("bundle", "exec");
+        }
+        if (nova.config.get("Rubocop.rvm-exec", "boolean")) {
+            const rubyVersionFile = nova.fs.open(
+                `${nova.workspace.path}/.ruby-version`
+            );
+            const rubyVersion = rubyVersionFile.readline().replace(/(\r\n|\n|\r)/gm, "");
+            args.unshift("rvm", rubyVersion, "--summary", "do");
+        }
+        if (nova.config.get("Rubocop.asdf-exec", "boolean")) {
+            args.unshift("asdf", "exec");
+        }
+        if (nova.config.get("Rubocop.mise-exec", "boolean")) {
+            args.unshift("mise", "exec", "--");
+        }
+        
+        // Create and start the language server
+        languageServer = new LanguageClient(
+            "rubocop-lsp",
+            "Rubocop Language Server",
+            {
+                type: "stdio",
+                path: "/usr/bin/env",
+                args: args,
+                env: {
+                    // Ensure we're in the workspace directory
+                    PWD: nova.workspace.path
+                }
+            },
+            {
+                syntaxes: ["ruby"]
+            }
+        );
+        
+        languageServer.onDidStop((err) => {
+            if (err) {
+                console.error("Rubocop language server stopped with error:", err);
+            }
+        });
+        
+        languageServer.start();
+        console.log("Rubocop language server started");
+        
+    } catch (error) {
+        console.error("Failed to start Rubocop language server:", error);
+    }
+}
+
+function stopLanguageServer() {
+    if (languageServer) {
+        languageServer.stop();
+        languageServer = null;
+        console.log("Rubocop language server stopped");
+    }
 }
 
 function autoCorrectFile(editor) {
@@ -24,7 +108,7 @@ function autoCorrectFile(editor) {
         try {
             const options = {
                 cwd: nova.workspace.path,
-                args: ["rubocop", '--disable-pending-cops', '--auto-correct', editor.document.path]
+                args: ["rubocop", '--disable-pending-cops', '--autocorrect', editor.document.path]
             };
             
             // Apply the same execution environment options as the issues provider
@@ -145,4 +229,6 @@ class IssuesProvider {
     }
 }
 
-nova.assistants.registerIssueAssistant("ruby", new IssuesProvider(), {event: "onChange"});
+if (!nova.config.get("Rubocop.use-language-server", "boolean")) {
+    nova.assistants.registerIssueAssistant("ruby", new IssuesProvider(), {event: "onChange"});
+}

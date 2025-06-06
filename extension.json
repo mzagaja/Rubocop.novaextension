@@ -3,7 +3,7 @@
   "name": "RuboCop",
   "organization": "Matt Zagaja",
   "description": "Rubocop extension.",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "categories": ["issues"],
   "repository": "https://github.com/mzagaja/Rubocop.novaextension",
   "bugs": "https://github.com/mzagaja/Rubocop.novaextension/issues",
@@ -46,6 +46,13 @@
       "key": "Rubocop.auto-correct",
       "title": "Auto correct on save.",
       "description": "Use this to run rubocop -a on save for your file",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "key": "Rubocop.use-language-server",
+      "title": "Use LSP Mode.",
+      "description": "Use rubocop LSP mode for instant feedback",
       "type": "boolean",
       "default": false
     }

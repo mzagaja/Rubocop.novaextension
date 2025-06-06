@@ -1,8 +1,12 @@
+## Version 1.5.1
+* --auto-correct is deprecated, so now use --autocorrect
+
 ## Version 1.5
 * Add mise exec option for mise users.
 * LLMs made JSON parsing unnecessarily complex so I refactored back to my original approach and then
   updated to resolve the real issue which was `end_line` is now `last_line`
 * Add autocorrect option.
+* Add option to use Rubocop in LSP mode for faster feedback
 
 ## Version 1.4
 * Add asdf exec option for asdf users.
