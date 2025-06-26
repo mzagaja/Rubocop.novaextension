@@ -108,7 +108,7 @@ function autoCorrectFile(editor) {
         try {
             const options = {
                 cwd: nova.workspace.path,
-                args: ["rubocop", '--disable-pending-cops', '--autocorrect', editor.document.path]
+                args: ["rubocop", '--disable-pending-cops', '-a', editor.document.path]
             };
             
             // Apply the same execution environment options as the issues provider

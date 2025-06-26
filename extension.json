@@ -3,7 +3,7 @@
   "name": "RuboCop",
   "organization": "Matt Zagaja",
   "description": "Rubocop extension.",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "categories": ["issues"],
   "repository": "https://github.com/mzagaja/Rubocop.novaextension",
   "bugs": "https://github.com/mzagaja/Rubocop.novaextension/issues",

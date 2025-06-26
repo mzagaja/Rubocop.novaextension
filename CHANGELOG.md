@@ -1,3 +1,6 @@
+# Version 1.5.2
+* Move from --auto-correct to -a which works with both --auto-correct and --autocorrect
+
 ## Version 1.5.1
 * --auto-correct is deprecated, so now use --autocorrect
 
